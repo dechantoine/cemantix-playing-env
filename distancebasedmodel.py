@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from sklearn.metrics.pairwise import euclidean_distances
 
 class DistanceBasedModel:
     
@@ -18,7 +19,8 @@ class DistanceBasedModel:
         
             
     def find_list_centroids(self, len_list=100):
-        norms = self.distance_func(np.zeros(self.model.vector_size).reshape(1,self.model.vector_size),self.model.vectors)
+        norms = euclidean_distances(np.zeros(self.model.vector_size).reshape(1,self.model.vector_size),
+                                    self.model.vectors)
         return [self.model.index_to_key[norms.argsort().argsort()[0][i]] for i in range(len_list)]
     
     

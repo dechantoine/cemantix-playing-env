@@ -4,8 +4,8 @@ import json
 import requests
 
 
-def get_score_cemantix(word):
-    response = requests.post("https://cemantix.herokuapp.com/score", data={"word" : word}).json()
+def get_score_cemantix(word, session):
+    response = session.post("https://cemantix.herokuapp.com/score", data={"word" : word}).json()
     if not "error" in list(response.keys()):
         return response["score"]*100
     else :
@@ -14,6 +14,7 @@ def get_score_cemantix(word):
 
     
 def play_cemantix(strategy, resume=None, max_turn=100):
+    session = requests.Session()
     
     if resume is None:
         df_game = pd.DataFrame(columns = ["word", "score_cemantix"])
@@ -31,7 +32,7 @@ def play_cemantix(strategy, resume=None, max_turn=100):
         while not score_cemantix:
             word = strategy.next_word(df_game)
             if word not in df_game["word"].values:
-                score_cemantix = get_score_cemantix(word)
+                score_cemantix = get_score_cemantix(word, session)
             k += 1
         
         df_game.loc[len(df_game)] = [word, score_cemantix]
